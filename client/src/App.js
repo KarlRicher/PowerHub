@@ -1,37 +1,59 @@
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 import styled from "styled-components";
 
-import LoginButton from "./components/LoginButton";
+import GlobalStyle from "./components/GlobalStyle";
+import Header from "./components/Header/Header";
+import Home from "./components/Home/Home";
+import LoginPage from "./components/Login";
+import Profile from "./components/Profile/Profile";
+import Sidebar from "./components/Sidebar";
+import Calculator from "./components/Calculator";
+import Leaderboard from "./components/Leaderboard";
 
 const App = () => {
-  return (
-    <Wrapper>
-      <SmallerWrapper>
-        <PowerHub>PowerHub</PowerHub>
-        <Paragraph>Connect with Powerlifters from around the world.</Paragraph>
-      </SmallerWrapper>
+  const { isLoading, error, user } = useAuth0();
 
-      <LoginButton />
-    </Wrapper>
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <div>Oops... {error.message}</div>;
+  }
+
+  return (
+    <>
+      {user && (
+        <Wrapper>
+          <BrowserRouter>
+            <GlobalStyle />
+            <Header />
+            <Main>
+              <Sidebar />
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/profile/:userEmail" element={<Profile />} />
+                <Route path="/leaderboard" element={<Leaderboard />} />
+                <Route path="/calculator" element={<Calculator />} />
+              </Routes>
+            </Main>
+          </BrowserRouter>
+        </Wrapper>
+      )}
+
+      {!user && <LoginPage />}
+    </>
   );
 };
 
 const Wrapper = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-
-  height: 100vh;
-`;
-
-const SmallerWrapper = styled.div`
-  display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
 `;
 
-const PowerHub = styled.h1``;
-
-const Paragraph = styled.p``;
+const Main = styled.div`
+  display: flex;
+`;
 
 export default App;
