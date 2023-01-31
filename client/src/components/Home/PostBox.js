@@ -60,7 +60,7 @@ const PostBox = ({ refreshFeed, setRefreshFeed }) => {
         />
         <Input
           type="text"
-          placeholder="How Strong Are You Feeling Today?"
+          placeholder="Say Something"
           onChange={(event) => {
             setCharacterCount(event.target.value.length);
             setTextEntry(event.target.value);
